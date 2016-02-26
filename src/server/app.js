@@ -43,29 +43,29 @@ app.use(express.static(path.join(__dirname, '../client')));
 app.use('/', routes);
 
 // *** db main routes *** //
-app.get('/api/wines', function(req, res, next) {
+// app.get('/', function(req, res, next) {
 
-  var responseArray = [];
+//   var responseArray = [];
 
-  pg.connect(connectionString, function (err, client, done) {
+//   pg.connect(connectionString, function (err, client, done) {
 
-    if(err) {
-      done();
-      return res.status(500).json({status: 'error', message: 'Something went wrong'});
-    }
-    //query the db
-    var query = client.query('SELECT * from wineTable');
-    // get all rows
-    query.on('row', function(row) {
-      responseArray.push(row);
-    });
-    query.on('end', function() {
-      res.json(responseArray);
-      done();
-    });
-    pg.end();
-  });
-});
+//     if(err) {
+//       done();
+//       return res.status(500).json({status: 'error', message: 'Something went wrong'});
+//     }
+//     //query the db
+//     var query = client.query('SELECT * from wineTable');
+//     // get all rows
+//     query.on('row', function(row) {
+//       responseArray.push(row);
+//     });
+//     query.on('end', function() {
+//       res.json(responseArray);
+//       done();
+//     });
+//     pg.end();
+//   });
+// });
 
 
 
