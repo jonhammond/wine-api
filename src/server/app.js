@@ -6,10 +6,15 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
+var pg = require('pg');
 
 
 // *** routes *** //
 var routes = require('./routes/index.js');
+
+
+// *** database *** //
+var connectionString = 'postgres://localhost:5432/wines';
 
 
 // *** express instance *** //
@@ -36,6 +41,32 @@ app.use(express.static(path.join(__dirname, '../client')));
 
 // *** main routes *** //
 app.use('/', routes);
+
+// *** db main routes *** //
+app.get('/api/wines', function(req, res, next) {
+
+  var responseArray = [];
+
+  pg.connect(connectionString, function (err, client, done) {
+
+    if(err) {
+      done();
+      return res.status(500).json({status: 'error', message: 'Something went wrong'});
+    }
+    //query the db
+    var query = client.query('SELECT * from wineTable');
+    // get all rows
+    query.on('row', function(row) {
+      responseArray.push(row);
+    });
+    query.on('end', function() {
+      res.json(responseArray);
+      done();
+    });
+    pg.end();
+  });
+});
+
 
 
 // catch 404 and forward to error handler
